@@ -127,7 +127,7 @@ abstract class Stub {
   public function setName(string $name) {
     $this->className = $this->classNamePrefix . $this->normalizeNameToClassName($name) . $this->classNameSuffix;
     // TODO Change targetFileName if not suitable
-    $this->targetFileName = $this->className;
+    $this->targetFileName = title_case($this->className);
   }
 
   protected function normalizeNameToClassName(string $name) {
@@ -177,7 +177,7 @@ abstract class Stub {
       );
     }
 
-    return realpath(base_path($directoryPathToType . DIRECTORY_SEPARATOR . $this->targetFileName));
+    return realpath(base_path($directoryPathToType)) . DIRECTORY_SEPARATOR . $this->targetFileName . '.php';
   }
 
   public function getDataForRenderer() {

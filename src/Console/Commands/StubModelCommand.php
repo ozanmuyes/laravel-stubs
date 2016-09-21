@@ -10,10 +10,10 @@ class StubModelCommand extends StubCommand {
    */
   protected $signature = '
     stub:model
-    {name: The name of the model}
-    {-F|--file: Indicates which stub file should be used}
-    {-M|--migration: Also creates a migration file}
-    {-S|--seeder: Also creates a seeder file}
+    {name : The name of the model}
+    {--f|file=default : Indicates which stub file should be used}
+    {--m|migration : Also creates a migration file}
+    {--s|seeder : Also creates a seeder file}
   ';
 
   /**
@@ -33,7 +33,7 @@ class StubModelCommand extends StubCommand {
     // Check if `migration` option set
     if ($this->option('migration')) {
       // TODO Test if `migration` is enough, or should I check for the `M` as well?
-var_dump("migration");
+      var_dump("migration");
     }
 
     // TODO Check also if seeder option set
