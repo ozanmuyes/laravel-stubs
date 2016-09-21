@@ -1,7 +1,7 @@
 {
   "name": "ozanmuyes/laravel-stubs",
   "description": "Create highly configurable classes via Artisan.",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "keywords": [
     "laravel",
     "stub",
