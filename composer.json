@@ -1,0 +1,37 @@
+{
+  "name": "ozanmuyes/laravel-stubs",
+  "description": "Create highly configurable classes via Artisan.",
+  "version": "0.1.0",
+  "keywords": [
+    "laravel",
+    "stub",
+    "generator"
+  ],
+  "homepage": "https://github.com/ozanmuyes/laravel-stubs",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Ozan Müyesseroğlu",
+      "email": "ozanmuyes@gmail.com",
+      "homepage": "http://ozanmuyes.com",
+      "role": "Developer"
+    }
+  ],
+  "support": {
+    "issues": "https://github.com/ozanmuyes/laravel-stubs/issues",
+    "source": "https://github.com/ozanmuyes/laravel-stubs/tree/master/src",
+    "docs": "https://github.com/ozanmuyes/laravel-stubs/README.md"
+  },
+  "require": {
+    "php": ">=7.0",
+    "laravel/framework": "~5.3"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "~5.4"
+  },
+  "autoload": {
+    "psr-4": {
+      "Ozanmuyes\\Stubs\\": "src/"
+    }
+  }
+}
