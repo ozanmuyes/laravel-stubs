@@ -32,7 +32,7 @@ class StubsServiceProvider extends ServiceProvider {
 
     $this->registerStubClasses();
 
-    $this->registerStubCommands();
+    $this->registerCommands();
   }
 
   // TODO Write a function to ease defining Blade directives
@@ -155,15 +155,45 @@ class StubsServiceProvider extends ServiceProvider {
   /**
    * Register stub commands.
    */
-  private function registerStubCommands() {
-    // StubModelCommand
-    //
-    $this->app->singleton('command.stubs.model', function ($app) {
-      return $app['Ozanmuyes\\Stubs\\Console\\Commands\\StubModelCommand'];
-    });
-
-    $this->commands('command.stubs.model');
+  private function registerCommands() {
+//    // StubModelCommand
+//    //
+//    $this->app->singleton('command.stubs.model', function ($app) {
+//      return $app[\Ozanmuyes\Stubs\Console\Commands\StubModelCommand::class];
+//    });
+//
+//    $this->commands('command.stubs.model');
+    $this->commands([
+      \Ozanmuyes\Stubs\Console\Commands\StubModelCommand::class,
+    ]);
 
     // Add more command registration here
   }
+
+  // TODO Figure out the codes below
+  //  private function registerStubsViewFinder() {
+////    $this->app->when(BladeRenderer::class)
+////      ->needs(View::class)
+////      ->give(function () {
+////        return new FileViewFinder(resolve('Illuminate\\Filesystem\\Filesystem'), [
+////          Helper::getStubsDirectory()
+////        ], [
+////          'blade.stub',
+////          'stub',
+////        ]);
+////      });
+//
+//    $finder = resolve('view.finder');
+//    $paths = $finder->getPaths();
+//    $extensions = $finder->getExtensions();
+//
+//    $paths[] = Helper::getStubsDirectory();
+//
+//    $extensions[] = 'blade.stub';
+//    $extensions[] = 'stub';
+//
+//    $this->app->singleton('view.finder', function() use ($paths, $extensions) {
+//      return new FileViewFinder(resolve('Illuminate\\Filesystem\\Filesystem'), $paths, $extensions);
+//    });
+//  }
 }

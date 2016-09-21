@@ -6,32 +6,31 @@ final class ModelStub extends Stub {
   /**
    * @var array $imports
    */
-  private $imports = [
-    'Illuminate\Database\Eloquent\Model'
+  protected $imports = [
+    \Illuminate\Database\Eloquent\Model::class,
   ];
 
   /**
    * @var string $extends
    */
-  private $extends = 'Illuminate\Database\Eloquent\Model';
-  // TODO Change it to 'Model' once Helpers::truncateFromStart test is OK
+  protected $extends = \Illuminate\Database\Eloquent\Model::class;
 
   /**
    * @var array $implements
    */
-  private $implements = [];
+  protected $implements = [];
 
   /**
    * @var array $traits
    */
-  private $traits = [];
+  protected $traits = [];
 
-  public function __construct() {
-    parent::__construct('model');
-
-    parent::setImports($this->imports);
-    parent::setExtends($this->extends);
-    parent::setImplements($this->implements);
-    parent::setTraits($this->traits);
+  /**
+   * ModelStub constructor.
+   *
+   * @param null $appNamespace Use the namespace for the app. For test purposes only.
+   */
+  public function __construct($appNamespace = null) {
+    parent::__construct('model', 'default', $appNamespace);
   }
 }

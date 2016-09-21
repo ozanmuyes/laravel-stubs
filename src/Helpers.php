@@ -54,123 +54,81 @@ class Helpers {
   }
 
   /**
-   * Remove first characters from $haystack where there is corresponding $needle characters.
-   * If they are equals take action depending on $preserveEndIfEqualsAfterLast;
-   * - If set preserve $haystack characters after the last occurrence of
-   *   $preserveEndIfEqualsAfterLast if found.
-   *   If not found return $haystack.
-   * - If not set return empty string
+   * Truncates given subjects considering searches if any matches.
    *
-   * @param        $haystack
-   * @param        $needle
-   * @param string $preserveEndIfEqualsAfterLast
+   * @param string|array $searches Namespace, or Namespace and Imports
+   * @param string|array $subjects Imports for Namespace,
+   *                               Namespace and Imports for Extends
+   * @param bool         $mustReturnArray
    *
-   * @return string
+   * @return array|string
+   * @throws \Exception
    */
-  private static function truncateFromStart($haystack, $needle, $preserveEndIfEqualsAfterLast = '') {
-    $haystack = trim($haystack, '\\');
-    $needle = trim($needle, '\\');
-
-    if ($haystack === $needle) {
-      if ('' === $preserveEndIfEqualsAfterLast) {
-        return '';
-      } else {
-        $lastPos = strrpos($haystack, $preserveEndIfEqualsAfterLast);
-
-        if (false === $lastPos) {
-          return $haystack;
-        }
-
-        return substr($haystack, $lastPos + 1);
+  public static function truncateFullyQualifiedNamespace($searches, $subjects, bool $mustReturnArray = false) {
+    if (is_string($subjects)) {
+      if ('' === $subjects) {
+        return [];
       }
-    }
 
-    if (starts_with($haystack, $needle)) {
-      return substr($haystack, strlen($needle) + 1);
-    }
-
-    return $haystack;
-  }
-
-  /**
-   * Iterates each item in $haystack to truncate if there is corresponding item in $needle
-   *
-   * @param array|string $haystack          The item list of truncated values
-   * @param array|string $needle            The unchanged list to check each item in $haystack
-   * @param string       $trimCharList      Character list for trim
-   * @param bool         $pickBestCandidate If just one value is wanted as result, pick the smallest and most likely to
-   *                                        $haystack
-   *
-   * @return array|null|string
-   */
-  public static function arr_substr($haystack, $needle, $trimCharList = ' \t\n\r\0\x0B', $pickBestCandidate = true) {
-    $result = [];
-
-    if (is_string($haystack)) {
-      $haystack = [$haystack];
-    }
-
-    if (is_string($needle)) {
-      $needle = [$needle];
-    }
-
-    $checkCandidates = [];
-    $temp = '';
-
-    foreach ($haystack as $truncated) {
-      foreach ($needle as $check) {
-        $temp = trim(self::truncateFromStart($truncated, $check, '\\'), $trimCharList);
-
-        if ('' === $temp) { // or if ('' === $temp || $temp == $truncated) {
-          continue;
-        }
-
-        $result[] = $temp;
-        $checkCandidates[$truncated][] = $temp;
+      $subjects = [$subjects];
+    } elseif (is_array($subjects)) {
+      if (count($subjects) === 0) {
+        return [];
       }
+    } else {
+      throw new \Exception('Subjects MUST be either string or array, neither given.');
     }
 
-    switch (count($result)) {
-      case 0:
-        return '';
-
-      case 1:
-        return $result[0];
+    if (is_string($searches)) {
+      $searches = [$searches];
     }
 
-    if ($pickBestCandidate) {
-      $bestCandidates = [];
-      $bestCandidate = '';
+    $results = [];
+    $searchesCount = count($searches);
 
-      foreach ($checkCandidates as $check => $candidates) {
-        foreach ($candidates as $candidate) {
-          if ('' === $bestCandidate) {
-            $bestCandidate = $candidate;
+    foreach ($subjects as $subject) {
+      for ($i = 0; $i < $searchesCount; $i++) {
+        $pos = strpos($subject, $searches[$i]);
 
+        if (false === $pos) {
+          if ($i + 1 === $searchesCount) {
+            // We exhausted the `searches` list with `subject`, add `subject` to `result`
+            // In order to not to lose it even though we are unable to truncate it.
+            $results[] = $subject;
+          } else {
             continue;
           }
+        } else {
+          $trimmed = trim(substr($subject, strlen($searches[$i])), '\\');
 
-          if (
-            strlen($candidate) < strlen($bestCandidate) &&
-            str_contains($bestCandidate, $candidate)
-          ) {
-            $bestCandidate = $candidate;
+          // If the `subject` and the `search` are equal just get class name from `subject`
+          if ('' === $trimmed) {
+            $trimmed = trim(substr($subject, strrpos($subject, '\\')), '\\');
           }
+
+          $results[] = $trimmed;
+
+          // We have successfully truncate the `subject`, so there is no need to look further
+          break;
         }
-
-        $bestCandidates[] = $bestCandidate;
-        $bestCandidate = '';
       }
-
-      $result = $bestCandidates;
     }
 
-    switch (count($result)) {
-      case 1:
-        return $result[0];
+    if ($mustReturnArray) {
+      return $results;
+    }
 
-      default:
-        return $result;
+    switch (count($results)) {
+      case 1: {
+        if ($mustReturnArray) {
+          return $results;
+        } else {
+          return $results[0];
+        }
+      }
+
+      default: // 2 or more
+        return $results;
     }
   }
 }

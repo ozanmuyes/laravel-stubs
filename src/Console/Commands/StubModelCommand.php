@@ -9,7 +9,7 @@ class StubModelCommand extends StubCommand {
    * @var string
    */
   protected $signature = '
-    stubs:model
+    stub:model
     {name: The name of the model}
     {-F|--file: Indicates which stub file should be used}
     {-M|--migration: Also creates a migration file}
