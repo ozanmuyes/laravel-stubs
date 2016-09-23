@@ -47,7 +47,7 @@ class Helpers {
     if (null === $path) {
       $path = file_exists(resource_path('stubs'))
         ? resource_path('stubs')
-        : base_path('vendor/ozanmuyes/stubs/resources/stubs');
+        : base_path('vendor/ozanmuyes/laravel-stubs/resources/stubs');
     }
 
     return self::normalizePath($path);

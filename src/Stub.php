@@ -121,7 +121,16 @@ abstract class Stub {
 
     // Set stub file path right after setting the fileName
     //
-    $this->stubFileName = Helpers::getStubsDirectory() . DIRECTORY_SEPARATOR . $this->type . DIRECTORY_SEPARATOR . $stubFileName . '.blade.php';
+    $this->stubFileName = $stubFileName;
+//    $this->stubFileName = Helpers::getStubsDirectory() . DIRECTORY_SEPARATOR . $this->type . DIRECTORY_SEPARATOR . $stubFileName . '.blade.php';
+  }
+
+  public function getType() {
+    return $this->type;
+  }
+
+  public function getStubFileName() {
+    return $this->stubFileName;
   }
 
   public function setName(string $name) {

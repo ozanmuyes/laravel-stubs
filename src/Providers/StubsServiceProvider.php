@@ -32,7 +32,12 @@ class StubsServiceProvider extends ServiceProvider {
 
     $this->registerStubClasses();
 
-    $this->registerCommands();
+    // Register console commands
+    $this->commands([
+      \Ozanmuyes\Stubs\Console\Commands\StubModelCommand::class,
+
+      // Add more command registration here
+    ]);
   }
 
   // TODO Write a function to ease defining Blade directives
@@ -134,7 +139,7 @@ class StubsServiceProvider extends ServiceProvider {
 
           case 'blade':
           default:
-            return new BladeRenderer();
+            return new BladeRenderer(resolve('blade.compiler'));
         }
       });
     //
@@ -150,24 +155,6 @@ class StubsServiceProvider extends ServiceProvider {
 //      ->give(ControllerStub::class);
 
     // Add more stub type's binding here
-  }
-
-  /**
-   * Register stub commands.
-   */
-  private function registerCommands() {
-//    // StubModelCommand
-//    //
-//    $this->app->singleton('command.stubs.model', function ($app) {
-//      return $app[\Ozanmuyes\Stubs\Console\Commands\StubModelCommand::class];
-//    });
-//
-//    $this->commands('command.stubs.model');
-    $this->commands([
-      \Ozanmuyes\Stubs\Console\Commands\StubModelCommand::class,
-    ]);
-
-    // Add more command registration here
   }
 
   // TODO Figure out the codes below
