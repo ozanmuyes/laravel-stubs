@@ -3,7 +3,6 @@
 namespace Ozanmuyes\Stubs\Console\Commands;
 
 use Illuminate\Console\Command;
-use Ozanmuyes\Stubs\Renderers\Renderer;
 use Ozanmuyes\Stubs\Stub;
 
 abstract class StubCommand extends Command {
@@ -15,23 +14,14 @@ abstract class StubCommand extends Command {
   private $stub;
 
   /**
-   * The stub renderer instance.
-   *
-   * @var Renderer $renderer
-   */
-  private $renderer;
-
-  /**
    * Create a new command instance.
    *
-   * @param Stub     $stub
-   * @param Renderer $renderer
+   * @param Stub $stub
    */
-  public final function __construct(Stub $stub, Renderer $renderer) {
+  public final function __construct(Stub $stub) {
     parent::__construct();
 
     $this->stub = $stub;
-    $this->renderer = $renderer;
   }
 
   /**
@@ -63,11 +53,17 @@ abstract class StubCommand extends Command {
     // Setting the stub is finished. Now create the file.
     $this->createActualFile();
 
+    // TODO Print success/error message
+
     return $this->afterHandle();
   }
 
   private function createActualFile() {
-    $rendered = $this->renderer->render($this->stub);
+    $rendered = \View::make(
+      $this->stub->getType() . DIRECTORY_SEPARATOR . $this->stub->getStubFileName(), // e.g. 'model/default'
+      $this->stub->getDataForRenderer()
+    )->render();
+
     // HACK Since Blade renderer could not properly handle PHP opening tag we add it here
     $rendered = "<?php\r\n\r\n" . $rendered;
 

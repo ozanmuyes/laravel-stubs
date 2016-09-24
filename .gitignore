@@ -3,3 +3,7 @@ composer.phar
 composer.lock
 .DS_Store
 .idea
+things.todo
+ignore.*
+
+resources/stubs/ignore.class-v1.blade.stub

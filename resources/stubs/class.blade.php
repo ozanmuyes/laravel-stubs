@@ -3,7 +3,6 @@
 @imports
 
 @class {
-  @traits
-
-  @yield('content')
+@traits
+@yield('content')
 }

@@ -33,4 +33,10 @@ final class ModelStub extends Stub {
   public function __construct($appNamespace = null) {
     parent::__construct('model', 'default', $appNamespace);
   }
+
+  protected function normalizeNameToClassName(string $name) {
+    $name = str_ireplace($this->getType(), '', $name);
+
+    return parent::normalizeNameToClassName($name);
+  }
 }

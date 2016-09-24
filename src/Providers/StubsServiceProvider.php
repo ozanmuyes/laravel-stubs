@@ -3,24 +3,35 @@
 namespace Ozanmuyes\Stubs\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use Ozanmuyes\Stubs\Console\Commands\StubModelCommand;
-use Ozanmuyes\Stubs\Renderers\{
-  Renderer,
-  Blade as BladeRenderer,
-  Template as TemplateRenderer
+use Ozanmuyes\Stubs\Console\Commands\{
+  StubModelCommand
 };
 use Ozanmuyes\Stubs\{
+  Helpers,
   Stub,
   ModelStub
 };
 
 class StubsServiceProvider extends ServiceProvider {
   /**
+   * List of console commands that this package provides.
+   *
+   * @var array $commands
+   */
+  protected $commands = [
+    StubModelCommand::class,
+
+    // Add more command registration here
+  ];
+
+  /**
    * Bootstrap the application services.
    *
    * @return void
    */
   public function boot() {
+    // The method MUST be called here, after Blade specific
+    // registrations had been done. Do NOT move somewhere else.
     $this->registerBladeDirectives();
   }
 
@@ -28,16 +39,12 @@ class StubsServiceProvider extends ServiceProvider {
    * Register the application services.
    */
   public function register() {
-    $this->registerRenderers();
-
     $this->registerStubClasses();
 
-    // Register console commands
-    $this->commands([
-      \Ozanmuyes\Stubs\Console\Commands\StubModelCommand::class,
+    $this->registerStubsViewFinder();
 
-      // Add more command registration here
-    ]);
+    // Register console commands
+    $this->commands($this->commands);
   }
 
   // TODO Write a function to ease defining Blade directives
@@ -111,7 +118,7 @@ class StubsServiceProvider extends ServiceProvider {
       }
 
       return sprintf(
-        '<?php echo "class " . %s; %s %s echo " {" . PHP_EOL; ?>',
+        '<?php echo "class " . %s; %s %s ?>',
         $name,
         $extendsString,
         $implementsString
@@ -124,25 +131,8 @@ class StubsServiceProvider extends ServiceProvider {
       }
 
       return
-        '<?php echo "use " . implode(", ", ' . $param . ') . ";" . PHP_EOL; ?>';
+        '<?php if (count($traits) > 0) { echo "use " . implode(", ", ' . $param . ') . ";" . PHP_EOL; } ?>';
     });
-  }
-
-  private function registerRenderers() {
-    $this->app->bind(Renderer::class,
-      function () {
-        switch (config('stubs.renderer', 'blade')) {
-          // Add more renderer here
-
-          case 'template':
-            return new TemplateRenderer();
-
-          case 'blade':
-          default:
-            return new BladeRenderer(resolve('blade.compiler'));
-        }
-      });
-    //
   }
 
   private function registerStubClasses() {
@@ -150,37 +140,21 @@ class StubsServiceProvider extends ServiceProvider {
       ->needs(Stub::class)
       ->give(ModelStub::class);
 
-//    $this->app->when(StubControllerCommand::class)
-//      ->needs(Stub::class)
-//      ->give(ControllerStub::class);
-
     // Add more stub type's binding here
   }
 
   // TODO Figure out the codes below
-  //  private function registerStubsViewFinder() {
-////    $this->app->when(BladeRenderer::class)
-////      ->needs(View::class)
-////      ->give(function () {
-////        return new FileViewFinder(resolve('Illuminate\\Filesystem\\Filesystem'), [
-////          Helper::getStubsDirectory()
-////        ], [
-////          'blade.stub',
-////          'stub',
-////        ]);
-////      });
-//
-//    $finder = resolve('view.finder');
-//    $paths = $finder->getPaths();
-//    $extensions = $finder->getExtensions();
-//
-//    $paths[] = Helper::getStubsDirectory();
-//
-//    $extensions[] = 'blade.stub';
-//    $extensions[] = 'stub';
-//
-//    $this->app->singleton('view.finder', function() use ($paths, $extensions) {
-//      return new FileViewFinder(resolve('Illuminate\\Filesystem\\Filesystem'), $paths, $extensions);
-//    });
-//  }
+  private function registerStubsViewFinder() {
+    /**
+     * @var \Illuminate\View\FileViewFinder $finder
+     */
+    $finder = app('view.finder'); // resolve the finder
+    $finder->addExtension('blade.stub');
+    $finder->addExtension('stub');
+    $finder->addLocation(Helpers::getStubsDirectory());
+
+    $this->app->singleton('view.finder', function () use ($finder) {
+      return $finder;
+    });
+  }
 }

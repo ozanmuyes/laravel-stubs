@@ -11,7 +11,7 @@ class StubModelCommand extends StubCommand {
   protected $signature = '
     stub:model
     {name : The name of the model}
-    {--f|file=default : Indicates which stub file should be used}
+    {--f|file=default : The stub file name which should be rendered}
     {--m|migration : Also creates a migration file}
     {--s|seeder : Also creates a seeder file}
   ';

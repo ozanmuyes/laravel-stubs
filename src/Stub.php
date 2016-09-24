@@ -4,7 +4,7 @@ namespace Ozanmuyes\Stubs;
 
 use Illuminate\Console\AppNamespaceDetectorTrait;
 
-abstract class Stub {
+class Stub {
   use AppNamespaceDetectorTrait;
 
   /**
@@ -140,7 +140,7 @@ abstract class Stub {
   }
 
   protected function normalizeNameToClassName(string $name) {
-    return str_singular(camel_case($name));
+    return str_singular(title_case($name));
   }
 
   public function setImports($imports) {
